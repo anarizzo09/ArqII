@@ -64,6 +64,6 @@ private:
     unique_ptr<instruction_queue_rob> fila_r;
 
     void dump_metrics(string bench_name, int cpu_freq, unsigned int total_instructions_exec,
-                       double ciclos, double cpi_medio, double t_cpu, double mips, int mode,
+                       double ciclos, double cpi_medio, double ipc_medio, double t_cpu, double mips, int mode,
                        float hit_rate, int tam_bpb, int mem_count, int n_bits);
 };
