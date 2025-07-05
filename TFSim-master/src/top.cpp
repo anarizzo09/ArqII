@@ -260,11 +260,13 @@ void top::metrics(int cpu_freq, int mode, string bench_name, int n_bits) {
         double ipc_medio = 0.0;
         double t_cpu = 0.0;
         double mips = 0.0;
+        double mem_access_rate = 0.0;
 
         if (total_instructions_exec > 0 && ciclos > 0) {
             cpi_medio = (double)ciclos / total_instructions_exec;
             ipc_medio = (double)total_instructions_exec / ciclos;
             t_cpu = (double)cpi_medio * total_instructions_exec * tempo_ciclo_clock_ns;
+            mem_access_rate = 100.0 * (double)mem_count / total_instructions_exec;
             
             if (t_cpu > 0) {
                 mips = total_instructions_exec / (t_cpu * 1e-9 * 1e6);
@@ -282,6 +284,7 @@ void top::metrics(int cpu_freq, int mode, string bench_name, int n_bits) {
         "# t_CPU: " << t_cpu << " ns" << "\n" <<
         "# MIPS: " << mips << " milhões de instruções por segundo" << "\n" <<
         "# Acessos a memoria: " << mem_count << "\n" <<
+        "# Taxa de acesso à memória: " << std::fixed << std::setprecision(2) << mem_access_rate << "%\n" <<
         "# Preditor: " << n_bits << " bits" << endl;
 
         if(mode == 1){
@@ -294,14 +297,14 @@ void top::metrics(int cpu_freq, int mode, string bench_name, int n_bits) {
         }
 
         dump_metrics(bench_name, cpu_freq, total_instructions_exec, ciclos, cpi_medio, ipc_medio, t_cpu, mips,
-                     mode, hit_rate, tam_bpb, mem_count, n_bits);
+                     mode, hit_rate, tam_bpb, mem_count, mem_access_rate, n_bits);
     }
 
 }
 
 void top::dump_metrics(string bench_name, int cpu_freq, unsigned int total_instructions_exec,
                        double ciclos, double cpi_medio, double ipc_medio, double t_cpu, double mips, int mode,
-                       float hit_rate, int tam_bpb, int mem_count, int n_bits) {
+                       float hit_rate, int tam_bpb, int mem_count, double mem_access_rate, int n_bits) {
 
     string helper;
     
@@ -326,6 +329,7 @@ void top::dump_metrics(string bench_name, int cpu_freq, unsigned int total_instr
         "# t_CPU: " << t_cpu << " ns" << "\n" <<
         "# MIPS: " << mips << " milhões de instruções por segundo" << "\n" <<
         "# Acessos a memoria: " << mem_count << "\n" <<
+        "# Taxa de acesso à ,emória: " << std::fixed << std::setprecision(2) << mem_access_rate << "%\n" <<
         "# Preditor: " << n_bits << " bits" << endl;
     
     if(mode == 1){

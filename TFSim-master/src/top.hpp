@@ -65,5 +65,5 @@ private:
 
     void dump_metrics(string bench_name, int cpu_freq, unsigned int total_instructions_exec,
                        double ciclos, double cpi_medio, double ipc_medio, double t_cpu, double mips, int mode,
-                       float hit_rate, int tam_bpb, int mem_count, int n_bits);
+                       float hit_rate, int tam_bpb, int mem_count, double mem_access_rate, int n_bits);
 };
