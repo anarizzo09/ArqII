@@ -256,11 +256,20 @@ void top::metrics(int cpu_freq, int mode, string bench_name, int n_bits) {
     if(fila_r != NULL && rob != NULL){
         unsigned int total_instructions_exec = get_rob_queue().get_instruction_counter();
         
-        double cpi_medio = (double) ciclos / total_instructions_exec;
-        
-        double t_cpu = (double) cpi_medio * total_instructions_exec * tempo_ciclo_clock_ns;
-        
-        double mips = total_instructions_exec / (t_cpu * 1e-9 * 1e6); 
+        double cpi_medio = 0.0;
+        double ipc_medio = 0.0;
+        double t_cpu = 0.0;
+        double mips = 0.0;
+
+        if (total_instructions_exec > 0 && ciclos > 0) {
+            cpi_medio = (double)ciclos / total_instructions_exec;
+            ipc_medio = (double)total_instructions_exec / ciclos;
+            t_cpu = (double)cpi_medio * total_instructions_exec * tempo_ciclo_clock_ns;
+            
+            if (t_cpu > 0) {
+                mips = total_instructions_exec / (t_cpu * 1e-9 * 1e6);
+            }
+        }
 
         cout <<
         "\n\n"
@@ -269,6 +278,7 @@ void top::metrics(int cpu_freq, int mode, string bench_name, int n_bits) {
         "# Total de Instruções Executadas: " << total_instructions_exec << "\n" <<
         "# Ciclos: " << ciclos << "\n" <<
         "# CPI Médio: " << cpi_medio << "\n" <<
+        "# IPC Médio: " << ipc_medio << "\n" <<
         "# t_CPU: " << t_cpu << " ns" << "\n" <<
         "# MIPS: " << mips << " milhões de instruções por segundo" << "\n" <<
         "# Acessos a memoria: " << mem_count << "\n" <<
@@ -283,14 +293,14 @@ void top::metrics(int cpu_freq, int mode, string bench_name, int n_bits) {
             cout << "# Taxa de sucesso - BPB[" << tam_bpb << "]: " << hit_rate << "%" << endl;
         }
 
-        dump_metrics(bench_name, cpu_freq, total_instructions_exec, ciclos, cpi_medio, t_cpu, mips,
+        dump_metrics(bench_name, cpu_freq, total_instructions_exec, ciclos, cpi_medio, ipc_medio, t_cpu, mips,
                      mode, hit_rate, tam_bpb, mem_count, n_bits);
     }
 
 }
 
 void top::dump_metrics(string bench_name, int cpu_freq, unsigned int total_instructions_exec,
-                       double ciclos, double cpi_medio, double t_cpu, double mips, int mode,
+                       double ciclos, double cpi_medio, double ipc_medio, double t_cpu, double mips, int mode,
                        float hit_rate, int tam_bpb, int mem_count, int n_bits) {
 
     string helper;
@@ -312,6 +322,7 @@ void top::dump_metrics(string bench_name, int cpu_freq, unsigned int total_instr
         "# Total de Instruções Executadas: " << total_instructions_exec << "\n" <<
         "# Ciclos: " << ciclos << "\n" <<
         "# CPI Médio: " << cpi_medio << "\n" <<
+        "# IPC Médio: " << ipc_medio << "\n" <<
         "# t_CPU: " << t_cpu << " ns" << "\n" <<
         "# MIPS: " << mips << " milhões de instruções por segundo" << "\n" <<
         "# Acessos a memoria: " << mem_count << "\n" <<
