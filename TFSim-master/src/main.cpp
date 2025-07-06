@@ -940,7 +940,11 @@ int sc_main(int argc, char *argv[])
 
     run_all.events().click([&]{
         // enquanto queue e rob nao estao vazios, roda ate o fim
-        while(!(top1.get_queue().queue_is_empty() && top1.get_rob().rob_is_empty())){
+        while(1){
+            if(spec && top1.get_rob_queue().queue_is_empty() && top1.get_rob().rob_is_empty())
+                break;
+            else if (!spec && top1.get_queue().queue_is_empty())
+                break;
             if(sc_is_running())
                 sc_start();
         }
